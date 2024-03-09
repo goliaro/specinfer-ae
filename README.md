@@ -3,6 +3,12 @@
 
 This is the artifact for SpecInfer. Follow the instructions below to install and run the tests.
 
+## Clone the repo
+To clone the repo, use the command below (don't forget the `--recursive` flag):
+```
+git clone --recursive https://github.com/goliaro/specinfer-ae.git
+```
+
 ## Requirements
 ### Hardware dependencies
 We run out experiments on two AWS g5.12xlarge instances, each with 4 NVIDIA A10 24GB GPUs, 48 CPU cores, and 192 GB DRAM. See below for the instructions to spin up the instances. Alternatively, we will also provide the reviewers login access to two pre-configured instances in our own AWS EC2 account. 
