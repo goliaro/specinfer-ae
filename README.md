@@ -20,10 +20,11 @@ Launch two AWS g5.12xlarge instances using the `Deep Learning OSS Nvidia Driver 
 The following software is required: CUDA 12.1, NCCL, Rust, CMake and Python3. Further, UCX and MPI are required for the multinode experiments. Additional Python dependencies are listed here: [here](https://github.com/flexflow/FlexFlow/blob/inference/requirements.txt). We recommend using the `Deep Learning OSS Nvidia Driver AMI GPU PyTorch 2.1.0 (Ubuntu 20.04)` AMI, and provide scripts and a conda environment to install all the remaining dependencies.
 
 ### Models
-We use the following LLM/SSM models for our experiments (for each model, we specify in parentheses the corresponding HuggingFace repository): LLaMA-68M (`JackFram/llama-68m`), LLaMA-7B (`huggyllama/llama-7b`), LLaMA-65B (`huggyllama/llama-65b`), OPT-125M (`facebook/opt-125m`), OPT-13B (`facebook/opt-13b`), OPT-125M (`facebook/opt-30b`). You can download all these models with the script: 
+We use the following LLM/SSM models for our experiments (for each model, we specify in parentheses the corresponding HuggingFace repository): LLaMA-68M (`JackFram/llama-68m`), LLaMA-7B (`huggyllama/llama-7b`), LLaMA-65B (`huggyllama/llama-65b`), OPT-125M (`facebook/opt-125m`), OPT-13B (`facebook/opt-13b`), OPT-125M (`facebook/opt-30b`). After installing SpecInfer, you can download all these models with the script: 
 ```
 ./download_models.sh
 ```
+⚠️ Note that you will need to install SpecInfer BEFORE downloading the models.
 
 ## Installation
 ### Installing the prerequisites
