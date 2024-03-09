@@ -1,5 +1,5 @@
 # SpecInfer Artifact
-*SpecInfer: Accelerating Generative Large Language Model Serving with Tree-based Speculative Inference and Verification* [ASPLOS'24] [Paper Link]([https://arxiv.org/abs/2311.15566](https://arxiv.org/abs/2305.09781)https://arxiv.org/abs/2305.09781)
+*SpecInfer: Accelerating Generative Large Language Model Serving with Tree-based Speculative Inference and Verification* [ASPLOS'24] [Paper Link](https://arxiv.org/abs/2305.09781)
 
 This is the artifact for SpecInfer. Follow the instructions below to install and run the tests.
 
