@@ -34,10 +34,12 @@ echo ">>> Tree-based speculative decoding test..."
 ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 20000 -ll:zsize 80000 -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/test.json --max-requests-per-batch $bs -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/basic_test/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.txt > ./FlexFlow/inference/output/basic_test/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.out
 echo "Single node test passed!"
 
+# Offloading test
 echo "Running offloading test..."
-./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 21800 -ll:zsize 80000 -llm-model $ssm_model_name  -prompt ./FlexFlow/inference/prompt/test.json -offload -offload-reserve-space-size 1000 --max-requests-per-batch $bs --fusion -output-file ./FlexFlow/inference/output/basic_test/offloading.txt > ./FlexFlow/inference/output/basic_test/offloading.out
+./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 21800 -ll:zsize 80000 -llm-model $ssm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/test.json -offload -offload-reserve-space-size 1000 --max-requests-per-batch $bs --fusion -output-file ./FlexFlow/inference/output/basic_test/offloading.txt > ./FlexFlow/inference/output/basic_test/offloading.out
 echo "Offloading test passed!"
 
+# Multinode test
 echo "Running multinode test..."
 mpirun -N 1 --hostfile ~/hostfile hostname
 echo "Multinode test passed..."

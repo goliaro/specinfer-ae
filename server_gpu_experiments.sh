@@ -10,7 +10,7 @@ export PATH=$UCX_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$UCX_DIR/lib:$LD_LIBRARY_PATH
 
 ./download_dataset.sh
-./download_weights.sh
+./download_models.sh
 
 batch_sizes=( 1 2 4 8 16 )
 

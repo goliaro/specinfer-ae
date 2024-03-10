@@ -9,7 +9,7 @@ export FF_LEGION_NETWORKS=ucx
 export UCX_DIR="$PWD/ucx-1.15.0/install"
 
 cd FlexFlow
-mkdir build
+mkdir -p build
 cd build
 ../config/config.linux
 make -j install

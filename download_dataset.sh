@@ -21,11 +21,11 @@ with open('chatgpt.json', 'r') as f:
 for i in (1,2,4,8,16):
     new_list = []
     for string in original_list:
-        new_list += [string] * i  # Create a list with 3 copies of the string and concatenate it
+        new_list += [string] * i  # Create a list with i copies of the string and concatenate it
 
     # Write the new list to a new JSON file
     with open(f'chatgpt_{i}.json', 'w') as f:
         json.dump(new_list, f)
 END
 
-rm chatgpt.json
+mv chatgpt.json chatgpt_offloading.json
