@@ -28,4 +28,4 @@ for i in (1,2,4,8,16):
         json.dump(new_list, f)
 END
 
-mv chatgpt.json chatgpt_offloading.json
+rm chatgpt.json

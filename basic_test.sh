@@ -1,6 +1,5 @@
 #! /usr/bin/env bash
 set -e
-set -x
 
 # Cd into directory holding this script
 cd "${BASH_SOURCE[0]%/*}"
@@ -9,6 +8,11 @@ cd "${BASH_SOURCE[0]%/*}"
 export UCX_DIR="$PWD/ucx-1.15.0/install"
 export PATH=$UCX_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$UCX_DIR/lib:$LD_LIBRARY_PATH
+
+# Download models (if not already downloaded)
+echo "Downloading models if needed..."
+./download_models.sh
+echo "Done downloading models"
 
 mkdir -p ./FlexFlow/inference/output/basic_test
 
@@ -35,8 +39,10 @@ echo ">>> Tree-based speculative decoding test..."
 echo "Single node test passed!"
 
 # Offloading test
+llm_model_name="facebook/opt-13b"
+ssm_model_name="facebook/opt-125m"
 echo "Running offloading test..."
-./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 21800 -ll:zsize 80000 -llm-model $ssm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/test.json -offload -offload-reserve-space-size 1000 --max-requests-per-batch $bs --fusion -output-file ./FlexFlow/inference/output/basic_test/offloading.txt > ./FlexFlow/inference/output/basic_test/offloading.out
+./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 2100 -ll:zsize 80000 -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/test.json -offload -offload-reserve-space-size 500 --max-sequence-length 256 --max-requests-per-batch $bs --fusion -output-file ./FlexFlow/inference/output/basic_test/offloading.txt > ./FlexFlow/inference/output/basic_test/offloading.out
 echo "Offloading test passed!"
 
 # Multinode test
