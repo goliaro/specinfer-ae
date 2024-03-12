@@ -17,47 +17,63 @@ batch_sizes=( 1 2 4 8 16 )
 # rm -rf ./FlexFlow/inference/output || true
 mkdir -p ./FlexFlow/inference/output
 
+start_time=$(date +%s)
+
 # single node, single GPU
 ncpus=8
 ngpus=1
+fsize=21890
+zsize=80000
+max_sequence_length=128
 llm_model_name="huggyllama/llama-7b"
 ssm_model_name="JackFram/llama-68m"
 for bs in "${batch_sizes[@]}"
 do
     # Incremental decoding
-    ./FlexFlow/build/inference/incr_decoding/incr_decoding -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 20000 -ll:zsize 80000 -llm-model $llm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-incr_dec.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-incr_dec.out
+    ./FlexFlow/build/inference/incr_decoding/incr_decoding -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize $fsize -ll:zsize $zsize -llm-model $llm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --max-sequence-length $max_sequence_length  -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-incr_dec.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-incr_dec.out
     # Sequence-based speculative decoding
-    ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 21800 -ll:zsize 80000 -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --expansion-degree -1 -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-sequence_specinfer.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-sequence_specinfer.out
+    ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize $fsize -ll:zsize $zsize -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --max-sequence-length $max_sequence_length  --expansion-degree -1 -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-sequence_specinfer.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-sequence_specinfer.out
     # Tree-based speculative decoding
-    ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 20000 -ll:zsize 80000 -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.out
+    ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize $fsize -ll:zsize $zsize -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --max-sequence-length $max_sequence_length  -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.out
 done
 
 # single node, multiple GPU
 ncpus=8
 ngpus=4
+fsize=21800
+zsize=80000
+max_sequence_length=128
 llm_model_name="facebook/opt-30b"
 ssm_model_name="facebook/opt-125m"
 for bs in "${batch_sizes[@]}"
 do
     # Incremental decoding
-    ./FlexFlow/build/inference/incr_decoding/incr_decoding -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 20000 -ll:zsize 80000 -llm-model $llm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-incr_dec.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-incr_dec.out
+    ./FlexFlow/build/inference/incr_decoding/incr_decoding -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize $fsize -ll:zsize $zsize -llm-model $llm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --max-sequence-length $max_sequence_length  -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-incr_dec.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-incr_dec.out
     # Sequence-based speculative decoding
-    ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 20000 -ll:zsize 80000 -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --expansion-degree -1 -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-sequence_specinfer.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-sequence_specinfer.out
+    ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize $fsize -ll:zsize $zsize -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --max-sequence-length $max_sequence_length  --expansion-degree -1 -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-sequence_specinfer.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-sequence_specinfer.out
     # Tree-based speculative decoding
-    ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 20000 -ll:zsize 80000 -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.out
+    ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize $fsize -ll:zsize $zsize -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --max-sequence-length $max_sequence_length  -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.out
 done
+
+end_time=$(date +%s)
+execution_time=$((end_time - start_time))
+echo "Total server gpu test time: $execution_time seconds"
+exit 0
 
 # multiple node, multiple GPU
 ncpus=8
 ngpus=1
+fsize=21890
+zsize=80000
+max_sequence_length=128
 llm_model_name="huggyllama/llama-65b"
 ssm_model_name="JackFram/llama-68m"
 for bs in "${batch_sizes[@]}"
 do
     # Incremental decoding
-    ./FlexFlow/build/inference/incr_decoding/incr_decoding -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 20000 -ll:zsize 30000 -llm-model $llm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-incr_dec.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-incr_dec.out
+    ./FlexFlow/build/inference/incr_decoding/incr_decoding -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize $fsize -ll:zsize $zsize -llm-model $llm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --max-sequence-length $max_sequence_length  -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-incr_dec.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-incr_dec.out
     # Sequence-based speculative decoding
-    ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 20000 -ll:zsize 30000 -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --expansion-degree -1 -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-sequence_specinfer.txt > 1_machine-${ngpus}_gpu-${bs}_batchsize-sequence_specinfer.out
+    ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize $fsize -ll:zsize $zsize -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --max-sequence-length $max_sequence_length  --expansion-degree -1 -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-sequence_specinfer.txt > 1_machine-${ngpus}_gpu-${bs}_batchsize-sequence_specinfer.out
     # Tree-based speculative decoding
-    ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 20000 -ll:zsize 30000 -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.out
+    ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize $fsize -ll:zsize $zsize -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --max-sequence-length $max_sequence_length  -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.txt > ./FlexFlow/inference/output/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.out
 done
