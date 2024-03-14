@@ -64,3 +64,23 @@ To ensure that SpecInfer is installed correctly and is functional, run the
 ./basic_test.sh
 ```
 script. This script will test the basic incremental decoding and speculative inference functionalities, on both single and multi nodes. It will also test the support for offloading. The test passes if it prints the "Test passed!" message. 
+
+## Experiment workflow
+
+### Running experiments
+We run the following two experiments to evaluate SpecInfer under different hardware setups. The output data will be saved to the `FlexFlow/inference/output` path.
+- **Server-grade GPU evaluation.** This experiment tests the performance of SpecInfer on server-grade GPUs. The LLMs and SSMs are loaded in GPU memory, and we measure the end-to-end inference latency using 1 node, and 2 nodes. In the single node case, we measure the performance using 1 GPU, or 4 GPUs. In the multinode case, we use 4GPUs per node. The experiments use LLAMA-7B, OPT-30B and LLAMA-65B as the LLMs, and LLAMA-68M and OPT-125M as SSMs. The experiment runs SpecInfer in three different modes: incremental decoding, sequence-based speculative decoding, and tree-based speculative decoding. The former two are used to obtain data for the ablation study, and the latter is the novel inference mode proposed by SpecInfer, and will be deployed by the user. To run the server-grade GPU evaluation, run:
+```
+./server_gpu_experiments.sh
+```
+- **Offloading evaluation.** This experiment tests the performance of \sys when loading only a subset of parameters in GPU memory, while offloading the remaining ones on CPU DRAM. This technique is used to perform inference when the target model is larger than the available GPU memory. In the experiment, SpecInfer uses a single GPU and swaps the model's weights to and from the CPU. To run the offloading evaluation, run: 
+```
+./offloading_experiments.sh
+```
+
+**Third-party frameworks.** Please follow the vLLM, FasterTransformer, and HuggingFace TGI, and FlexGen official documentation to reproduce the performance of the third-party frameworks under the experiment scenarios.
+
+### Parsing the output data
+The scripts above will generate data at the `FlexFlow/inference/output` path. For each scenario, a `.txt` file contains the generated output for each prompt, and a `.out` file contains the stdout logs. The quality of the generated output can be evaluated visually and compared with the output from third-party inference frameworks.
+
+We provide scripts to parse the raw output data and generate CSV files that can be used to generate the paper’s figures. The scripts are in the [data_parsing](./data_parsing) folder. Each script reads the relevant output data from the files in the `FlexFlow/inference/output` folder and produces output CSV (`.csv) file(s) with the result(s). The scripts work even with incomplete experiment data.
