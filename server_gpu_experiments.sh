@@ -55,6 +55,8 @@ do
     ./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize $fsize -ll:zsize $zsize -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/chatgpt_$bs.json --max-requests-per-batch $bs --max-sequence-length $max_sequence_length  -tensor-parallelism-degree $ngpus --fusion -output-file ./FlexFlow/inference/output/server_medium-${bs}_batchsize-tree_specinfer.txt > ./FlexFlow/inference/output/server_medium-${bs}_batchsize-tree_specinfer.out
 done
 
+exit 0
+
 # tensor + pipeline parallelism
 ncpus=8
 ngpus=8

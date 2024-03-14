@@ -42,12 +42,14 @@ echo "Single node test passed!"
 llm_model_name="facebook/opt-13b"
 ssm_model_name="facebook/opt-125m"
 echo "Running offloading test..."
-./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 2100 -ll:zsize 80000 -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/test.json -offload -offload-reserve-space-size 500 --max-sequence-length 256 --max-requests-per-batch $bs --fusion -output-file ./FlexFlow/inference/output/basic_test/offloading.txt > ./FlexFlow/inference/output/basic_test/offloading.out
+./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 21000 -ll:zsize 80000 -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/test.json -offload -offload-reserve-space-size 500 --max-sequence-length 128 --max-requests-per-batch $bs -output-file ./FlexFlow/inference/output/basic_test/offloading.txt > ./FlexFlow/inference/output/basic_test/offloading.out
 echo "Offloading test passed!"
 
 # Multinode test
 echo "Running multinode test..."
 mpirun -N 1 --hostfile ~/hostfile hostname
+ngpus=4
+./FlexFlow/build/inference/spec_infer/spec_infer -ll:cpu $ncpus -ll:util $ncpus -ll:gpu $ngpus -ll:fsize 20000 -ll:zsize 80000 -llm-model $llm_model_name -ssm-model $ssm_model_name -prompt ./FlexFlow/inference/prompt/test.json --max-requests-per-batch $bs -tensor-parallelism-degree 2 -pipeline-parallelism-degree 2 --fusion -output-file ./FlexFlow/inference/output/basic_test/1_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.txt > ./FlexFlow/inference/output/basic_test/multi_machine-${ngpus}_gpu-${bs}_batchsize-tree_specinfer.out
 echo "Multinode test passed..."
 
 echo ""
