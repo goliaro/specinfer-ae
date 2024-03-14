@@ -22,4 +22,4 @@ export FF_LEGION_NETWORKS=ucx
 # mkdir -p ./FlexFlow/inference/prompt
 # echo '["Three tips for staying healthy are: "]' > ./FlexFlow/inference/prompt/test.json
 
-mpirun -x REALM_UCP_BOOTSTRAP_PLUGIN -x PATH -x LD_LIBRARY_PATH --hostfile ~/hostfile --mca btl_tcp_if_include ens5 -N 1 -np 2 /home/ubuntu/specinfer-ae/FlexFlow/build/inference/incr_decoding/incr_decoding -ll:cpu 8 -ll:util 8 -ll:gpu 4 -ll:fsize 20000 -ll:zsize 20000 -llm-model huggyllama/llama-7b -prompt /home/ubuntu/specinfer-ae/FlexFlow/inference/prompt/test.json --max-requests-per-batch 1 -tensor-parallelism-degree 4 -pipeline-parallelism-degree 2 --fusion
+mpirun -x REALM_UCP_BOOTSTRAP_PLUGIN -x PATH -x LD_LIBRARY_PATH --hostfile ~/hostfile --mca btl_tcp_if_include ens5 -N 1 -np 2 gdb -ex run -ex bt --args /home/ubuntu/specinfer-ae/FlexFlow/build/inference/incr_decoding/incr_decoding -ll:cpu 8 -ll:util 8 -ll:gpu 4 -ll:fsize 20000 -ll:zsize 20000 -llm-model JackFram/llama-68m -prompt /home/ubuntu/specinfer-ae/FlexFlow/inference/prompt/test.json --max-requests-per-batch 1 -tensor-parallelism-degree 4 -pipeline-parallelism-degree 2 --fusion --disable-control-replication
